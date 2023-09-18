@@ -98,12 +98,17 @@ const Login = () => {
 
         if (user.status == "active") {
           router.push(getNavigator("home"));
-          ToastMessage("Login Successfully", "success", lang);
+          setTimeout(() => {
+            ToastMessage("Login Successfully", "success", lang);
+          }, 1000);
         }
 
         if (user.status == "inactive") {
           router.push(getNavigator("verify"));
-          ToastMessage("Please verify your account", "success", lang);
+
+          setTimeout(() => {
+            ToastMessage("Please verify your account", "success", lang);
+          }, 1000);
         }
 
         //reset inputs

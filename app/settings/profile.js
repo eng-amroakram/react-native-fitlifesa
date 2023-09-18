@@ -19,10 +19,11 @@ import profileStyle from "../../assets/styles/profile";
 import { useRouter } from "expo-router";
 import getNavigator from "../../services/navigators";
 import axios from "axios";
-import api, { baseUrl, routes } from "../../services/routes";
+import { baseUrl, routes } from "../../services/routes";
 import storage from "../../services/storage";
 import ToastMessage from "../../constants/Toaster";
 import { setUser } from "../../redux/slices/auth";
+import { setLang } from "../../redux/slices/lang";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -85,6 +86,9 @@ const Profile = () => {
       uri: pickerResult.assets[0].uri ?? "null",
       name: pickerResult.assets[0].fileName,
       type: pickerResult.assets[0].type,
+      size: pickerResult.assets[0].fileSize,
+      width: pickerResult.assets[0].width,
+      height: pickerResult.assets[0].height,
     });
   };
 
@@ -134,13 +138,33 @@ const Profile = () => {
           let user = response.data.data;
           dispatch(setUser(user));
           setLoading(false);
-          ToastMessage("Profile updated successfully", "success",lang);
+          ToastMessage("Profile updated successfully", "success", lang);
         }
-
         setLoading(false);
       } catch (error) {
-        setLoading(false);
-        console.log(error.response);
+        if (error?.response?.data?.status == 422) {
+          let errors = error?.response?.data?.errors;
+          if (errors?.image) {
+            ToastMessage(errors?.image, "error", lang);
+            console.log("Size Image is: ", errors?.file_size);
+          }
+          setLoading(false);
+        }
+
+        if (error?.response?.data?.status == 401) {
+          ToastMessage("Unauthorized", "error", lang);
+          setTimeout(async () => {
+            dispatch(setUser(null));
+            await storage.remove("token");
+            await storage.remove("user");
+            dispatch(setLang("en"));
+            ToastMessage("Login to continue", "error", "en");
+            setLoading(false);
+            router.push(getNavigator("login"));
+          }, 1000);
+        }
+
+        console.log(error.response.data);
       }
     }
   };
@@ -150,12 +174,12 @@ const Profile = () => {
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           onPress={() => router.push(getNavigator("home"))}
-          style={{ margin: 20 }}
+          style={{ marginLeft: 20 }}
         >
           <Icon
-            name="arrowleft"
-            family="AntDesign"
-            size={30}
+            name="arrow-left-circle"
+            family="Feather"
+            size={40}
             color={materialTheme.colors.white}
           />
         </TouchableOpacity>

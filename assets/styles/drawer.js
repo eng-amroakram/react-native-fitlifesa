@@ -18,6 +18,7 @@ import storage from "../../services/storage";
 import { useRouter } from "expo-router";
 import getNavigator from "../../services/navigators";
 import lang, { setLang } from "../../redux/slices/lang";
+import { setUser } from "../../redux/slices/auth";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -88,6 +89,18 @@ const leftHeaderImage = () => {
     dispatch(setLang(changeLang));
     await storage.set("lang", changeLang);
     router.push(getNavigator("home"));
+  };
+
+  const logout = async () => {
+    expandableOverlayHeaderRightRef.current?.closeExpandable();
+    await storage.remove("token");
+    await storage.remove("user");
+    await storage.set("lang", "en");
+
+    dispatch(setLang("en"));
+    dispatch(setUser(null));
+
+    router.push(getNavigator("login"));
   };
 
   return (
@@ -489,6 +502,52 @@ const leftHeaderImage = () => {
                 >
                   <Icon
                     name={lang == "ar" ? "left" : "right"}
+                    family="AntDesign"
+                    size={15}
+                    color={materialTheme.colors.white}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => logout()}>
+              <View
+                style={{
+                  backgroundColor: materialTheme.colors.error,
+                  borderRadius: 15,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  flexDirection: lang == "ar" ? "row-reverse" : "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {translate("Logout", lang)}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon
+                    name="logout"
                     family="AntDesign"
                     size={15}
                     color={materialTheme.colors.white}

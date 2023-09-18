@@ -5,6 +5,7 @@ import {
   RadioButton,
   RadioGroup,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native-ui-lib";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import api, { routes } from "../../services/routes";
 import { useRouter } from "expo-router";
 import { setUser } from "../../redux/slices/auth";
-
+import { Icon } from "galio-framework";
 import Images from "../../constants/Images";
 import materialTheme from "../../constants/Theme";
 import translate from "../../lang/localizer";
@@ -21,6 +22,7 @@ import questionsStyle from "../../assets/styles/questions";
 import ToastMessage from "../../constants/Toaster";
 import storage from "../../services/storage";
 import getNavigator from "../../services/navigators";
+import { setLang } from "../../redux/slices/lang";
 
 const Questions = () => {
   const [loading, setLoading] = useState(false);
@@ -104,87 +106,46 @@ const Questions = () => {
 
       if (response.status == 200) {
         let user = response.data.user;
-
-        console.log("User: ", user);
         if (user.is_body_info_completed) {
           await storage.set("user", JSON.stringify(user));
           dispatch(setUser(user));
           ToastMessage("Questionnaire Completed Successfully", "success", lang);
           router.push(getNavigator("results"));
-          // setGoal("");
-          // setActivity("");
-          // setLevel("");
-          // setKgPerWeek("");
           setLoading(false);
           return;
         } else {
-          //error
           ToastMessage(
             "Something went wrong with questionnaire, try again",
             "error",
             lang
           );
-
-          router.push(getNavigator("body"));
+          router.push(getNavigator("bodyIOS"));
         }
       }
 
       if (response.status == 422) {
         setLoading(false);
-
-        let errors = response.errors;
         ToastMessage("Please Answer All Questions", "error", lang);
-
-        // if (errors.age) {
-        //   console.log("Errors Age: ", errors.age);
-        //   ToastMessage(errors.age[0], "error", lang);
-        // }
-
-        // if (errors.height) {
-        //   console.log("Errors Height: ", errors.height);
-        //   ToastMessage(errors.height[0], "error", lang);
-        // }
-
-        // if (errors.weight) {
-        //   console.log("Errors Weight: ", errors.weight);
-        //   ToastMessage(errors.weight[0], "error", lang);
-        // }
-
-        // if (errors.gender) {
-        //   console.log("Errors Gender: ", errors.gender);
-        //   ToastMessage(errors.gender[0], "error", lang);
-        // }
-
-        // if (errors.goal) {
-        //   console.log("Errors Goal: ", errors.goal);
-        //   ToastMessage(errors.goal[0], "error", lang);
-        // }
-
-        // if (errors.activity) {
-        //   console.log("Errors Activity: ", errors.activity);
-        //   ToastMessage(errors.activity[0], "error", lang);
-        // }
-
-        // if (errors.level) {
-        //   console.log("Errors Level: ", errors.level);
-        //   ToastMessage(errors.level[0], "error", lang);
-        // }
-
-        // if (errors.kg_per_week) {
-        //   console.log("Errors Kg Per Week: ", errors.kg_per_week);
-        //   ToastMessage(errors.kg_per_week[0], "error", lang);
-        // }
       }
 
-      if (response.status == 401) {
-        ToastMessage("Login to continue using the app", "error", lang);
-        router.push(getNavigator("login"));
+      if (response?.status == 401) {
+        ToastMessage("Unauthorized", "error", lang);
+        setTimeout(async () => {
+          dispatch(setUser(null));
+          await storage.remove("token");
+          await storage.remove("user");
+          dispatch(setLang("en"));
+          ToastMessage("Login to continue", "error", "en");
+          setLoading(false);
+          router.push(getNavigator("login"));
+        }, 1000);
       }
+
+      setLoading(false);
     } else {
       ToastMessage("Please fill in your body info", "error", lang);
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -194,6 +155,21 @@ const Questions = () => {
       style={questionsStyles.backgroundImage}
     >
       <SafeAreaView style={questionsStyles.safeAreaView}>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            onPress={() => router.push(getNavigator("bodyIOS"))}
+            style={{
+              marginLeft: 20,
+            }}
+          >
+            <Icon
+              name="arrow-left-circle"
+              family="Feather"
+              size={40}
+              color={materialTheme.colors.white}
+            />
+          </TouchableOpacity>
+        </View>
         <ScrollView>
           <View style={questionsStyles.container}>
             <Text style={questionsStyles.title}>

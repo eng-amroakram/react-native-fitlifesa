@@ -125,6 +125,8 @@ const translations = {
   "Don't have an account?": "ليس لديك حساب؟",
   "Forgot Password?": "هل نسيت كلمة المرور؟",
   "Profile updated successfully": "تم تحديث الملف الشخصي بنجاح",
+  "File size must be less than 1MB": "يجب أن يكون حجم الملف أقل من 1 ميغابايت",
+  "Login to continue": "تسجيل الدخول للمتابعة",
 };
 
 export default translations;

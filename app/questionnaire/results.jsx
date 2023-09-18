@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { ActivityIndicator, ImageBackground, ScrollView } from "react-native";
-import { Button, Image, Text, View } from "react-native-ui-lib";
+import {
+  Button,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native-ui-lib";
 import resultsStyle from "../../assets/styles/results";
 import { useSelector } from "react-redux";
 import Images from "../../constants/Images";
@@ -8,6 +14,7 @@ import translate from "../../lang/localizer";
 import materialTheme from "../../constants/Theme";
 import { useRouter } from "expo-router";
 import getNavigator from "../../services/navigators";
+import { Icon } from "galio-framework";
 
 const Results = () => {
   //Redux
@@ -32,6 +39,19 @@ const Results = () => {
       source={Images.loginCover}
       style={resultsStyles.imageBackground}
     >
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          onPress={() => router.push(getNavigator("home"))}
+          style={{ marginLeft: 20, marginTop: 40 }}
+        >
+          <Icon
+            name="arrow-left-circle"
+            family="Feather"
+            size={40}
+            color={materialTheme.colors.white}
+          />
+        </TouchableOpacity>
+      </View>
       {/* header texts */}
       <View style={resultsStyles.headerTexts}>
         <Text style={resultsStyles.title}>

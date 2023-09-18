@@ -23,7 +23,7 @@ const resultsStyle = (lang) => {
     },
 
     headerTexts: {
-      paddingTop: 110,
+      paddingTop: 40,
       borderBottomWidth: 5,
       marginHorizontal: 20,
       paddingBottom: 10,

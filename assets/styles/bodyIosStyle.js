@@ -5,15 +5,18 @@ const { height, width } = Dimensions.get("screen");
 
 const bodyIosStyle = () => {
   return StyleSheet.create({
+    safeAreaView: {
+      flex: 1,
+    },
+
     container: {
       flex: 1,
-      height: "100%",
     },
 
     imageBackground: {
-      flex: 1,
-      resizeMode: "cover",
-      justifyContent: "center",
+      position: "absolute",
+      width: width,
+      height: height,
     },
 
     contentContainer: {

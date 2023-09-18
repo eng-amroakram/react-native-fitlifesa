@@ -109,8 +109,6 @@ const Register = () => {
       if (response.status == 201 || response.status == "201") {
         let user = response.data.user;
 
-        console.log(user);
-
         dispatch(setUser(user));
         await AsyncStorage.setItem("token", user.token);
         await AsyncStorage.setItem("user", JSON.stringify(user));
@@ -118,11 +116,17 @@ const Register = () => {
         ToastMessage("Register successfully", "success", lang);
 
         if (user.status == "inactive") {
-          router.push(getNavigator("verify"));
+          setTimeout(() => {
+            router.push(getNavigator("verify"));
+            setLoading(false);
+          }, 1000);
         }
 
         if (user.status == "active") {
-          router.push(getNavigator("home"));
+          setTimeout(() => {
+            router.push(getNavigator("intro"));
+            setLoading(false);
+          }, 1000);
         }
 
         //reset inputs

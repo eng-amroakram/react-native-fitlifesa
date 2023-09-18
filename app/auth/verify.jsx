@@ -136,14 +136,15 @@ const Verify = () => {
 
     const response = await api.post(routes.auth.verify, data, { lang: lang });
 
-    console.log(response);
-
     if (response.status == 200 || response.status == "200") {
       dispatch(setUser(response.data.user));
       await storage.set("user", JSON.stringify(response.data.user));
       ToastMessage("Verified Successfully", "success", lang);
-      router.push(getNavigator("intro"));
-      setIsLoading(false);
+
+      setTimeout(() => {
+        router.push(getNavigator("intro"));
+        setIsLoading(false);
+      }, 1000);
     }
 
     if (response.status == 422 || response.status == "422") {
