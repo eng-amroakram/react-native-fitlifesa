@@ -5,9 +5,18 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-localization"
     ],
     "name": "Fitlifesa",
-    "slug": "Fitlifesa"
+    "slug": "Fitlifesa",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A1B1A"
+    }
   }
 }
