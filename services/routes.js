@@ -26,6 +26,14 @@ export const routes = {
     user: "profile/user",
     update: "profile/update",
   },
+
+  settings: {
+    getSettings: "settings/get-settings",
+  },
+
+  nutrition: {
+    foods: "nutrition/food-exchanges",
+  },
 };
 
 const createUrl = (path) => baseUrl + path;
@@ -33,7 +41,7 @@ const createUrl = (path) => baseUrl + path;
 const api = {
   get: async (path, config = {}) => {
     let lang = config.lang;
-    let url = createUrl(path) + "?lang=" + lang || "en";
+    let url = createUrl(path) + config.query + "&lang=" + lang || "en";
 
     config.headers = {
       "Content-Type": "application/json",

@@ -67,6 +67,7 @@ const Index = () => {
         .get(routes.profile.user, {
           token: token,
           lang: lang,
+          query: "?",
         })
         .then((res) => {
           if (res.status == 200) {
@@ -113,8 +114,6 @@ const Index = () => {
 
   return (
     <View style={indexStyles.container}>
-      <StatusBar barStyle="dark-content" />
-
       <View style={indexStyles.imageContainer}>
         <ImageBackground source={Images.Onboarding} style={indexStyles.image} />
       </View>

@@ -3,7 +3,6 @@ import {
   Dimensions,
   ImageBackground,
   ScrollView,
-  StyleSheet,
 } from "react-native";
 import {
   LoaderScreen,
@@ -21,48 +20,51 @@ import api, { routes } from "../../services/routes";
 import storage from "../../services/storage";
 import { useSelector } from "react-redux";
 import translate from "../../lang/localizer";
-import aboutStyle from "../../assets/styles/about";
 import { useRouter } from "expo-router";
+import privacyStyle from "../../assets/styles/privacy";
 import HTMLRender from "react-native-render-html";
 
 const { height, width } = Dimensions.get("screen");
 
-const About = () => {
+const Privacy = () => {
   const [loading, setLoading] = useState(true);
-  const [about, setAbout] = useState(false);
+  const [privacy, setPrivacy] = useState(false);
   const lang = useSelector((state) => state.lang.lang);
 
-  const aboutStyles = aboutStyle(lang);
-
   const router = useRouter();
+  const privacyStyles = privacyStyle(lang);
 
   useEffect(() => {
-    const getAbout = async () => {
+    const getPrivacy = async () => {
       setLoading(true);
       let token = await storage.get("token");
       let lang = await storage.get("lang");
+
       let response = await api.get(routes.settings.getSettings, {
         token: token,
         lang: lang,
         query: "?",
       });
 
+
+      console.log(response);
+
       let settings = response.data;
-      let about = settings.about_us;
-      setAbout(about);
+      let privacy = settings.privacy_policy;
+      setPrivacy(privacy);
       setLoading(false);
     };
 
-    getAbout();
+    getPrivacy();
   }, []);
 
   return (
     <ImageBackground
       source={Images.loginCover}
-      style={aboutStyles.backgroundImage}
+      style={privacyStyles.backgroundImage}
       resizeMode="contain"
     >
-      <SafeAreaView style={aboutStyles.safeAreaView}>
+      <SafeAreaView style={privacyStyles.safeAreaView}>
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             onPress={() => router.push(getNavigator("home"))}
@@ -80,7 +82,7 @@ const About = () => {
         </View>
 
         {loading ? (
-          <View style={aboutStyles.containerLoading}>
+          <View style={privacyStyles.containerLoading}>
             <LoaderScreen
               message={translate("Loading...", lang)}
               messageStyle={{
@@ -92,19 +94,23 @@ const About = () => {
             />
           </View>
         ) : (
-          <View style={aboutStyles.container}>
-            <Text style={aboutStyles.title}>{translate("About Us", lang)}</Text>
-            <ScrollView showsVerticalScrollIndicator={true}>
+          <View style={privacyStyles.container}>
+            <Text style={privacyStyles.title}>
+              {translate("Privacy Policy", lang)}
+            </Text>
+            <ScrollView scrollsToTop={true}>
               <HTMLRender
                 source={{
-                  html: about ?? "No Data",
+                  html: privacy ?? "No Data",
                 }}
-                baseStyle={{
+                baseStyle={{ 
                   color: materialTheme.colors.white,
                   fontFamily: "Roboto",
                   textAlign: lang === "ar" ? "right" : "left",
-                }}
+                  
+                 }}
                 contentWidth={width}
+
               />
             </ScrollView>
           </View>
@@ -114,4 +120,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default Privacy;

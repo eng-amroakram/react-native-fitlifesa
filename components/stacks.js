@@ -1,24 +1,19 @@
-import { Dimensions, ScrollView, StyleSheet } from "react-native";
-import translate from "../../lang/localizer";
-import materialTheme from "../../constants/Theme";
-import { Icon } from "galio-framework";
-import {
-  Chip,
-  Image,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native-ui-lib";
-import Images, { userApiImage } from "../../constants/Images";
-import { ExpandableOverlay } from "react-native-ui-lib/src/incubator";
+import { Stack, useRouter } from "expo-router";
 import { createRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import storage from "../../services/storage";
-import { useRouter } from "expo-router";
-import getNavigator from "../../services/navigators";
-import lang, { setLang } from "../../redux/slices/lang";
-import { setUser } from "../../redux/slices/auth";
+import { setLang } from "../redux/slices/lang";
+import getNavigator from "../services/navigators";
+import storage from "../services/storage";
+import { ExpandableOverlay } from "react-native-ui-lib/src/incubator";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
+import { Chip, Image, Text, TouchableOpacity, View } from "react-native-ui-lib";
+import { userApiImage } from "../constants/Images";
+import translate from "../lang/localizer";
+import materialTheme from "../constants/Theme";
+import { RootSiblingParent } from "react-native-root-siblings";
+import { setUser } from "../redux/slices/auth";
+import { Icon } from "galio-framework";
+import ToastMessage from "../constants/Toaster";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -37,47 +32,24 @@ const backToHome = () => {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
-          marginLeft: lang == "en" ? 20 : 0,
-          marginRight: lang == "ar" ? 10 : 0,
+          marginLeft: 15,
         }}
       >
-        {lang == "ar" ? null : (
-          <Icon
-            name="left"
-            family="AntDesign"
-            size={20}
-            color={materialTheme.colors.primary}
-          />
-        )}
-
-        <Text
-          style={{
-            color: materialTheme.colors.primary,
-            fontSize: 16,
-            fontWeight: "bold",
-            marginLeft: 10,
-          }}
-        >
-          {translate("Back", lang)}
-        </Text>
-
-        {lang == "ar" ? (
-          <Icon
-            name="right"
-            family="AntDesign"
-            size={20}
-            color={materialTheme.colors.primary}
-          />
-        ) : null}
+        <Icon
+          name="left"
+          family="AntDesign"
+          size={20}
+          color={materialTheme.colors.primary}
+        />
       </View>
     </TouchableOpacity>
   );
 };
 
-const leftHeaderImage = () => {
+const leftHeaderImage = (lang) => {
   const expandableOverlayHeaderRightRef = createRef();
+  const expandableOverlaySettingsRef = createRef();
   const auth = useSelector((state) => state.auth);
-  const lang = useSelector((state) => state.lang.lang);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -108,7 +80,7 @@ const leftHeaderImage = () => {
       ref={expandableOverlayHeaderRightRef}
       useDialog
       onPress={() => {
-        console.log("pressed");
+        console.log("Open Dialog Menu");
       }}
       dialogProps={{
         width: width,
@@ -125,7 +97,7 @@ const leftHeaderImage = () => {
           <View
             style={{
               width: width,
-              height: height,
+              height: height * 1.1,
               backgroundColor: materialTheme.colors.primary,
               borderRadius: 20,
               paddingHorizontal: 20,
@@ -151,7 +123,7 @@ const leftHeaderImage = () => {
                   textAlign: "center",
                 }}
               >
-                {translate("Done", lang)}
+                {translate("Close", lang)}
               </Text>
 
               <Text
@@ -175,7 +147,7 @@ const leftHeaderImage = () => {
                   expandableOverlayHeaderRightRef.current?.closeExpandable();
                 }}
               >
-                {translate("Done", lang)}
+                {translate("Close", lang)}
               </Text>
             </View>
 
@@ -459,10 +431,79 @@ const leftHeaderImage = () => {
               </View>
             </TouchableOpacity>
 
+            <View
+              style={{
+                borderRadius: 15,
+                marginTop: 30,
+                paddingHorizontal: 5,
+                paddingVertical: 10,
+                flexDirection: lang == "ar" ? "row-reverse" : "row",
+                justifyContent: "space-between",
+                borderBottomWidth: 2,
+                borderBottomColor: materialTheme.colors.secondary,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 14,
+                  fontWeight: "bold",
+                }}
+              >
+                {translate("Settings", lang)}
+              </Text>
+            </View>
+
+            <TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: materialTheme.colors.secondary,
+                  borderRadius: 15,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  flexDirection: lang == "ar" ? "row-reverse" : "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {translate("Change Password", lang)}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon
+                    name={lang == "ar" ? "left" : "right"}
+                    family="AntDesign"
+                    size={15}
+                    color={materialTheme.colors.white}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => {
                 expandableOverlayHeaderRightRef.current?.closeExpandable();
-                navigation.navigate("settings");
+                router.push(getNavigator("privacy"));
               }}
             >
               <View
@@ -490,7 +531,7 @@ const leftHeaderImage = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    {translate("Settings", lang)}
+                    {translate("Privacy Policy", lang)}
                   </Text>
                 </View>
 
@@ -509,6 +550,80 @@ const leftHeaderImage = () => {
                 </View>
               </View>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                expandableOverlayHeaderRightRef.current?.closeExpandable();
+                router.push(getNavigator("about"));
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: materialTheme.colors.secondary,
+                  borderRadius: 15,
+                  marginTop: 15,
+                  paddingHorizontal: 20,
+                  paddingVertical: 10,
+                  flexDirection: lang == "ar" ? "row-reverse" : "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {translate("About Us", lang)}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    alignItems: lang == "en" ? "flex-start" : "flex-end",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Icon
+                    name={lang == "ar" ? "left" : "right"}
+                    family="AntDesign"
+                    size={15}
+                    color={materialTheme.colors.white}
+                  />
+                </View>
+              </View>
+            </TouchableOpacity>
+
+            <View
+              style={{
+                borderRadius: 15,
+                marginTop: 30,
+                paddingHorizontal: 5,
+                paddingVertical: 10,
+                flexDirection: lang == "ar" ? "row-reverse" : "row",
+                justifyContent: "space-between",
+                borderBottomWidth: 2,
+                borderBottomColor: materialTheme.colors.secondary,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 14,
+                  fontWeight: "bold",
+                }}
+              >
+                {translate("Control", lang)}
+              </Text>
+            </View>
 
             <TouchableOpacity onPress={() => logout()}>
               <View
@@ -565,8 +680,8 @@ const leftHeaderImage = () => {
         style={{
           width: 30,
           height: 30,
-          marginLeft: lang == "ar" ? 20 : 0,
-          marginRight: lang == "ar" ? 0 : 20,
+          marginLeft: lang == "en" ? 10 : 0,
+          marginRight: lang == "ar" ? 10 : 0,
           borderRadius: 15,
           backgroundColor: materialTheme.colors.primary,
         }}
@@ -575,139 +690,106 @@ const leftHeaderImage = () => {
   );
 };
 
-const drawerStyle = (lang) => {
+const stacksStyle = (lang) => {
   return StyleSheet.create({
-    indexDrawerScreen: {
+    indexStackScreen: {
+      headerStatusBarHeight: 0,
       headerShown: false,
       title: translate("Index", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
-      lazy: true,
     },
 
-    profileDrawerScreen: {
+    profileStackScreen: {
       headerShown: false,
-      lazy: true,
-      title: translate("Profile", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
       headerStatusBarHeight: 0,
+      title: translate("Profile", lang),
       headerLeft: () => (lang == "en" ? backToHome() : null),
       headerRight: () => (lang == "ar" ? backToHome() : null),
     },
 
-    aboutDrawerScreen: {
-      headerShown: true,
-      title: translate("About", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
+    aboutStackScreen: {
       headerStatusBarHeight: 0,
+      headerShown: false,
+      title: translate("About", lang),
       headerLeft: () => {},
     },
 
-    homeDrawerScreen: {
+    privacyStackScreen: {
+      headerStatusBarHeight: 0,
+      headerShown: false,
+      title: translate("Privacy Policy", lang),
+      headerLeft: () => {},
+    },
+
+    homeStackScreen: {
       headerShown: true,
       title: translate("Home", lang),
-      gestureHandlerProps: {
-        enabled: false,
+      headerTitleStyle: {
+        color: materialTheme.colors.primary,
+        fontSize: 20,
+        fontFamily: "RobotoBold",
       },
-      headerStatusBarHeight: 0,
-
-      headerRight: () => (lang == "en" ? leftHeaderImage() : null),
-      headerLeft: () => (lang == "ar" ? leftHeaderImage() : null),
+      headerRight: () => (lang == "ar" ? leftHeaderImage(lang) : null),
+      headerLeft: () => (lang == "en" ? leftHeaderImage(lang) : null),
     },
 
-    loginDrawerScreen: {
+    loginStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Login", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    registerDrawerScreen: {
+    registerStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Register", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    introVideoDrawerScreen: {
+    introVideoStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Intro", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    verifyDrawerScreen: {
+    verifyStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Verify", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    bodyDrawerScreen: {
+    bodyStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Health Details", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    questionsDrawerScreen: {
+    questionsStackScreen: {
       headerShown: false,
-      lazy: true,
+      headerStatusBarHeight: 0,
       title: translate("Questions", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
-      headerStatusBarHeight: 0,
       headerLeft: () => {},
     },
 
-    resultsDrawerScreen: {
+    resultsStackScreen: {
       headerShown: false,
-      lazy: true,
-      title: translate("Results", lang),
-      gestureHandlerProps: {
-        enabled: false,
-      },
       headerStatusBarHeight: 0,
+      title: translate("Results", lang),
       headerLeft: () => {},
     },
 
-    foodsDrawerScreen: {
+    foodsStackScreen: {
+      headerStatusBarHeight: 0,
       headerShown: true,
       title: translate("Food Exchanges", lang),
-      gestureHandlerProps: {
-        enabled: false,
+      headerLeft: () => backToHome(),
+      headerStyle: {
+        backgroundColor: materialTheme.colors.lightGreen,
       },
-      headerStatusBarHeight: 0,
-      headerLeft: () => (lang == "en" ? backToHome() : null),
-      headerRight: () => (lang == "ar" ? backToHome() : null),
     },
 
     container: {
@@ -806,4 +888,74 @@ const drawerStyle = (lang) => {
   });
 };
 
-export default drawerStyle;
+const Stacks = () => {
+  const lang = useSelector((state) => state.lang.lang);
+
+  const stacksStyles = stacksStyle(lang);
+
+  return (
+    <RootSiblingParent>
+      <Stack>
+        {/* index */}
+        <Stack.Screen name="index" options={stacksStyles.indexStackScreen} />
+        <Stack.Screen name="home" options={stacksStyles.homeStackScreen} />
+
+        {/* settings */}
+        <Stack.Screen
+          name="settings/profile"
+          options={stacksStyles.profileStackScreen}
+        />
+
+        <Stack.Screen
+          name="settings/about"
+          options={stacksStyles.aboutStackScreen}
+        />
+
+        <Stack.Screen
+          name="settings/privacy"
+          options={stacksStyles.privacyStackScreen}
+        />
+
+        {/* auth */}
+        <Stack.Screen
+          name="auth/login"
+          options={stacksStyles.loginStackScreen}
+        />
+        <Stack.Screen
+          name="auth/register"
+          options={stacksStyles.registerStackScreen}
+        />
+        <Stack.Screen
+          name="auth/verify"
+          options={stacksStyles.verifyStackScreen}
+        />
+        <Stack.Screen
+          name="auth/intro"
+          options={stacksStyles.introVideoStackScreen}
+        />
+
+        {/* questionnaire */}
+        <Stack.Screen
+          name="questionnaire/questions"
+          options={stacksStyles.questionsStackScreen}
+        />
+        <Stack.Screen
+          name="questionnaire/BodyIOS"
+          options={stacksStyles.bodyStackScreen}
+        />
+        <Stack.Screen
+          name="questionnaire/results"
+          options={stacksStyles.resultsStackScreen}
+        />
+
+        {/* nutrition */}
+        <Stack.Screen
+          name="nutrition/foods"
+          options={stacksStyles.foodsStackScreen}
+        />
+      </Stack>
+    </RootSiblingParent>
+  );
+};
+
+export default Stacks;

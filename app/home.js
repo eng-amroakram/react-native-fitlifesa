@@ -5,11 +5,15 @@ import Images from "../constants/Images";
 import homeStyle from "../assets/styles/home";
 import { useSelector } from "react-redux";
 import translate from "../lang/localizer";
+import { useRouter } from "expo-router";
+import getNavigator from "../services/navigators";
 
 const Home = () => {
   //Redux
   const lang = useSelector((state) => state.lang.lang);
   const auth = useSelector((state) => state.auth);
+
+  const router = useRouter();
 
   //Styles
   const homeStyles = homeStyle(lang);
@@ -47,7 +51,7 @@ const Home = () => {
 
       <View style={homeStyles.servicesSection}>
         {/* nutrition section */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push(getNavigator("foods"))}>
           <View style={homeStyles.nutritionSectionCard}>
             {lang === "ar" ? (
               <View>

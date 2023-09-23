@@ -58,6 +58,7 @@ export default {
     icon: "#4A4A4A",
     black: "#000000",
     dark_grey: "#898989",
+    nutrition: "#F7FEDC",
 
     red: "#A00000",
     green: "#50BC28",

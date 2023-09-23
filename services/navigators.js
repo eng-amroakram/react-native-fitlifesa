@@ -10,6 +10,8 @@ const navigator = {
   results: "questionnaire/results",
   profile: "settings/profile",
   about: "settings/about",
+  foods: "nutrition/foods",
+  privacy: "settings/privacy",
 };
 
 const getNavigator = (route) => {

@@ -14,6 +14,22 @@ const fat = require("../assets/images/fat.png");
 const man = require("../assets/images/man.png");
 const checkMark = require("../assets/images/check-mark.png");
 const profile = require("../assets/images/profile.png");
+const mail = require("../assets/images/mail.png");
+
+const tipsImage = require("../assets/images/nutrition/tips-image.png");
+const tipsImageActive = require("../assets/images/tips-image-active.png");
+
+const performanceImage = require("../assets/images/nutrition/performance-image.png");
+const performanceImageActive = require("../assets/images/performance-image-active.png");
+
+const foodsImage = require("../assets/images/nutrition/foods-image.png");
+const foodsImageActive = require("../assets/images/foods-image-active.png");
+
+const plansImage = require("../assets/images/nutrition/plans-image.png");
+const plansImageActive = require("../assets/images/plans-image-active.png");
+
+const appleImage = require("../assets/images/nutrition/apple-image.png");
+const appleImageActive = require("../assets/images/apple-image-active.png");
 
 const headerDrawer = baseUrl + "header_2.png";
 const specialOffers = baseUrl + "special-offers.png";
@@ -36,6 +52,18 @@ export default {
   calories,
   carb,
   fat,
+
+  tipsImage,
+  tipsImageActive,
+  performanceImage,
+  performanceImageActive,
+  foodsImage,
+  foodsImageActive,
+  plansImage,
+  plansImageActive,
+  appleImage,
+  appleImageActive,
+
   profile,
   checkMark,
   headerDrawer,
@@ -44,4 +72,5 @@ export default {
   groupExercises,
   groupServices,
   groupSpecialists,
+  mail,
 };

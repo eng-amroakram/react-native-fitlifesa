@@ -22,6 +22,7 @@ import Verify from "../app/auth/verify";
 import Questions from "../app/questionnaire/questions";
 import Results from "../app/questionnaire/results";
 import BodyIOS from "../app/questionnaire/BodyIOS";
+import Foods from "../app/nutrition/foods";
 
 const DrawerContent = () => {
   //Redux
@@ -155,6 +156,8 @@ const Drawer = () => {
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         drawerPosition: lang == "ar" ? "right" : "left",
+        lazy: true,
+        swipeEnabled: true,
       }}
     >
       <DrawerNavigator.Screen
@@ -222,6 +225,12 @@ const Drawer = () => {
         name="questionnaire/results"
         options={drawerStyles.resultsDrawerScreen}
         component={Results}
+      />
+
+      <DrawerNavigator.Screen
+        name="nutrition/foods"
+        options={drawerStyles.foodsDrawerScreen}
+        component={Foods}
       />
     </DrawerNavigator.Navigator>
   );
